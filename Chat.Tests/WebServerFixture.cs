@@ -16,8 +16,7 @@ namespace Chat.Tests
 
         public void Dispose()
         {
-            this.iisExpress.CloseMainWindow();
-            this.iisExpress.Dispose();
+            this.iisExpress.Kill();
         }
 
         private void StartIisExpress()

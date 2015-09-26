@@ -1,0 +1,32 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Welcome to SignalR based Chat!";
+}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Welcome to SignalR based Chat!</h1>
+        <p>Please type your messages below, so everyone else can see them.</p>
+    </div>
+    <div class="form-inline">
+        <label for="msg">Your message:</label>
+        <input id="msg" type="text" class="form-control input-lg"/>
+        <input id="broadcast" type="button" value="Send" class="btn btn-primary"/>
+    </div>
+    <br/>
+    <ul id="messages" class="list-group"></ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var chatHub = $.connection.chatHub;
+        chatHub.client.newMessage = function(user, message) {
+            $('#messages').append('<li class="list-group-item"><span class="badge">' + user + '</span>' + message + '</li>');
+        };
+
+        $.connection.hub.start().done(function () {
+            $("#broadcast").click(function () {
+                chatHub.server.sendMessage($('#msg').val());
+            });
+        });
+    });
+</script>

@@ -11,7 +11,6 @@ namespace Chat.Tests
         public WebServerFixture()
         {
             var thread = new Thread(this.StartIisExpress) { IsBackground = true };
-
             thread.Start();
         }
 
@@ -20,7 +19,6 @@ namespace Chat.Tests
             this.iisExpress.CloseMainWindow();
             this.iisExpress.Dispose();
         }
-
 
         private void StartIisExpress()
         {

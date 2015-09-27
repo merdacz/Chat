@@ -12,7 +12,6 @@
     {
         public void Configuration(IAppBuilder app)
         {
-            ControllerBuilder.Current.SetControllerFactory(new ChatControllerFactory());
             GlobalHost
                 .DependencyResolver
                 .Register(typeof(ChatHub), () => new ChatHub(new InMemoryMessageLog()));

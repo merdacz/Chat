@@ -24,11 +24,16 @@
                 var alice = new ChatPageObject(aliceBrowser);
                 var bob = new ChatPageObject(bobBrowser);
 
+                alice.Join("Alice Cooper");
+                bob.Join("Bob Dylan");
                 alice.SendMessage("Hello Bob!");
 
                 alice.GotMessage("Hello Bob!");
                 alice.InputWasCleared();
                 bob.GotMessage("Hello Bob!");
+
+                alice.Leave();
+                bob.Leave();
             }
         }
 
@@ -38,22 +43,27 @@
             using (var aliceBrowser = BrowserFactory.Create())
             {
                 var alice = new ChatPageObject(aliceBrowser);
+                alice.Join("Alice Cooper");
                 alice.SendMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
                 {
                     alice.SendMessage($"Message #{num}");
                 }
+
+                alice.Leave();
             }
 
             using (var bobBrowser = BrowserFactory.Create())
             {
                 var bob = new ChatPageObject(bobBrowser);
+                bob.Join("Bob Dylan");
                 bob.DidNotGetMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
                 {
                     bob.GotMessage($"Message #{num}");
                 }
-                
+
+                bob.Leave();
             }
         }
     }

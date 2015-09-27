@@ -30,11 +30,24 @@
             }
         }
 
+        public ChatPageObject Join(string userName)
+        {
+            this.browser.FillIn("usr").With(userName);
+            this.browser.ClickButton("join");
+            return this;
+        }
+
         public ChatPageObject SendMessage(string message)
         {
             this.browser.FillIn("msg").With(message);
             this.browser.FindId("msg").SendKeys(Keys.Enter);
             Thread.Sleep(500);
+            return this;
+        }
+
+        public ChatPageObject Leave()
+        {
+            this.browser.ClickButton("leave");
             return this;
         }
 

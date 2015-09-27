@@ -1,44 +1,99 @@
-﻿@model IEnumerable<Chat.Logic.Message>
-@{
+﻿@{
     ViewBag.Title = "Welcome to SignalR based Chat!";
 }
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Sample Chat</a>
+        </div>
+    </div>
+</nav>
 <div class="container">
-    <div class="jumbotron">
-        <h1>Welcome to SignalR based Chat!</h1>
-        <p>Please type your messages below, so everyone else can see them.</p>
+    <div id="error" class="alert alert-danger"></div>
+    <div id="auth" class="form-inline">
+        <label for="usr">Your nick name:</label>
+        <input id="usr" type="text" class="form-control input-lg"/>
+        <input id="join" type="button" value="Join" class="btn btn-primary"/>
     </div>
-    <ul id="messages" class="list-group">
-        @foreach (var message in Model)
-        {
-            <li class="list-group-item"><span class="badge">@message.UserName</span>@message.Text</li>
-        }
-    </ul>
-    <div class="form-inline">
-        <label for="msg">Your message:</label>
-        <input id="msg" type="text" class="form-control input-lg"/>
-        <input id="broadcast" type="button" value="Send" class="btn btn-primary"/>
+    <div id="chat">
+        <div class="row">
+            <div class="col-md-2">
+                <ul id="users" class="list-group"></ul>
+                <input id="leave" type="button" value="Leave" class="btn btn-primary"/>
+            </div>
+            <div class="col-md-10">
+                <ul id="messages" class="list-group"></ul>
+                <div class="form-inline">
+                    <label for="msg">Your message:</label>
+                    <input id="msg" type="text" class="form-control input-lg" style="width: 80%"/>
+                    <input id="broadcast" type="button" value="Send" class="btn btn-primary"/>
+                </div>
+            </div>
+        </div>
     </div>
-    
 </div>
-
 <script type="text/javascript">
     function sendMessage(chatHub) {
         chatHub.server.sendMessage($('#msg').val());
         $('#msg').val('');
     }
-    $(function () {
-        var chatHub = $.connection.chatHub;
-        chatHub.client.newMessage = function(user, message) {
-            $('#messages').append('<li class="list-group-item"><span class="badge">' + user + '</span>' + message + '</li>');
-        };
 
-        $.connection.hub.start().done(function () {
+    $(function () {
+        $("#error").hide();
+        $("#auth").show();
+        $("#chat").hide();
+        var chatHub = $.connection.chatHub;
+        chatHub.client.newMessage = function (username, message) {
+            if ($('#messages').find('li').length === 15) {
+                $('#messages').find('li')[0].remove();
+            }
+
+            $('#messages').append('<li class="list-group-item"><span class="badge">' + username + '</span>' + message + '</li>');
+        };
+        chatHub.client.invalidOperation = function(errorMessage) {
+            $('#error').text(errorMessage).show().delay(3000).fadeOut();
+        };
+        chatHub.client.joinedSuccessfully = function (userList, recentMessages) {
+            var i;
+            for (i = 0; i < userList.length; i++) {
+                var user = userList[i];
+                $('#users').append('<li id="' + user + '" class="list-group-item">' + user + '</li>');
+            }
+            for (i = 0; i < recentMessages.length; i++) {
+                var message = recentMessages[i];
+                $('#messages').append('<li class="list-group-item"><span class="badge">' + message.UserName + '</span>' + message.Text + '</li>');
+            }
+
+            $('#auth').hide();
+            $('#chat').show();
+        }
+        chatHub.client.leftSuccessfully = function() {
+            $('#auth').show();
+            $('#chat').hide();
+
+        }
+        chatHub.client.newUserJoined = function(username) {
+            $('#users').append('<li id="' + username + '" class="list-group-item">' + username + '</li>');
+        };
+        chatHub.client.userleft = function(username) {
+            $('#' + username).remove();
+        }
+
+        $.connection.hub.start().done(function() {
             $('#msg').keyup(function(e) {
                 if (e.keyCode == 13) {
                     sendMessage(chatHub);
                 }
             });
-            $("#broadcast").click(function () {
+            $('#join').click(function() {
+                $('#messages').find('li').remove();
+                $('#users').find('li').remove();
+                chatHub.server.join($('#usr').val());
+            });
+            $('#leave').click(function() {
+                chatHub.server.leave();
+            });
+            $("#broadcast").click(function() {
                 sendMessage(chatHub);
             });
         });

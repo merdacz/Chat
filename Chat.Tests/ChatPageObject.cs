@@ -38,5 +38,10 @@
         {
             this.Input.Should().BeEmpty();
         }
+
+        public void DidNotGetMessage(string message)
+        {
+            this.Messages.Should().NotContain(msg => msg.Text.Contains(message));
+        }
     }
 }

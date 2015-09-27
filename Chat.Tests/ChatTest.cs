@@ -32,12 +32,13 @@
             }
         }
 
-        [Fact(Skip = "Not implemented yet.")]
-        public void When_the_user_logs_in__the_last_15​_messages_will_be_shown()
+        [Fact]
+        public void When_the_user_logs_in__the_last_15​_messages_will_be_shown_if_avail()
         {
             using (var aliceBrowser = BrowserFactory.Create())
             {
                 var alice = new ChatPageObject(aliceBrowser);
+                alice.SendMessage("Old message. ");
                 for (int num = 1; num <= 15; num++)
                 {
                     alice.SendMessage($"Message #{num}");
@@ -47,7 +48,12 @@
             using (var bobBrowser = BrowserFactory.Create())
             {
                 var bob = new ChatPageObject(bobBrowser);
-                bob.Messages.Should().HaveCount(15);
+                bob.DidNotGetMessage("Old message. ");
+                for (int num = 1; num <= 15; num++)
+                {
+                    bob.GotMessage($"Message #{num}");
+                }
+                
             }
         }
     }

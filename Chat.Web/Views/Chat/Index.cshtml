@@ -1,4 +1,4 @@
-﻿@model dynamic
+﻿@model IEnumerable<Chat.Logic.Message>
 @{
     ViewBag.Title = "Welcome to SignalR based Chat!";
 }
@@ -7,7 +7,12 @@
         <h1>Welcome to SignalR based Chat!</h1>
         <p>Please type your messages below, so everyone else can see them.</p>
     </div>
-    <ul id="messages" class="list-group"></ul>
+    <ul id="messages" class="list-group">
+        @foreach (var message in Model)
+        {
+            <li class="list-group-item"><span class="badge">@message.UserName</span>@message.Text</li>
+        }
+    </ul>
     <div class="form-inline">
         <label for="msg">Your message:</label>
         <input id="msg" type="text" class="form-control input-lg"/>

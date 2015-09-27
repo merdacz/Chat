@@ -14,15 +14,18 @@
     {
         private readonly IMessageLog messageLog;
 
+        private readonly IChatConfiguration configuration;
+
         private string ConnectionId => this.Context.ConnectionId;
 
         private static readonly string SystemUserName = "system";
 
         private static readonly IDictionary<string, string> Participants = new Dictionary<string, string>();
          
-        public ChatHub(IMessageLog messageLog)
+        public ChatHub(IMessageLog messageLog, IChatConfiguration configuration)
         {
             this.messageLog = messageLog;
+            this.configuration = configuration;
         }
 
         public void Join(string username)
@@ -39,7 +42,7 @@
                 return;
             }
 
-            if (Participants.Count >= 20)
+            if (Participants.Count >= this.configuration.GetMaxCapacity())
             {
                 this.Clients.Caller.invalidOperation("Chat is full, please retry. ");
                 return;
@@ -61,7 +64,7 @@
                 return;
             }
 
-            var username = Participants[this.ConnectionId];
+            string username = Participants[this.ConnectionId];
             Participants.Remove(this.ConnectionId);
 
             this.Clients.Caller.leftSuccessfully();
@@ -72,13 +75,13 @@
 
         public void SendMessage(string message)
         {
-            if (!Participants.ContainsKey(ConnectionId))
+            if (!Participants.ContainsKey(this.ConnectionId))
             {
                 this.Clients.Caller.invalidOperation("Cannot send messages until joined. ");
                 return;
             }
 
-            var username = Participants[this.ConnectionId];
+            string username = Participants[this.ConnectionId];
             this.messageLog.Save(username, message);
             this.Clients.All.newMessage(username, message);
         }

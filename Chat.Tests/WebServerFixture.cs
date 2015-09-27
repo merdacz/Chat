@@ -10,6 +10,7 @@ namespace Chat.Tests
 
         public WebServerFixture()
         {
+            Environment.SetEnvironmentVariable("UnderTest", "True");
             var thread = new Thread(this.StartIisExpress) { IsBackground = true };
             thread.Start();
         }

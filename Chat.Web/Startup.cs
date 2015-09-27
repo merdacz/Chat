@@ -12,9 +12,9 @@
     {
         public void Configuration(IAppBuilder app)
         {
-            GlobalHost
-                .DependencyResolver
-                .Register(typeof(ChatHub), () => new ChatHub(new InMemoryMessageLog()));
+            GlobalHost.DependencyResolver.Register(
+                typeof(ChatHub),
+                () => new ChatHub(new InMemoryMessageLog(), new ChatConfiguration()));
             app.MapSignalR();
         }
     }

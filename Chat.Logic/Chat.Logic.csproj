@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatConfiguration.cs" />
+    <Compile Include="IChatConfiguration.cs" />
     <Compile Include="IMessageLog.cs" />
     <Compile Include="InMemoryMessageLog.cs" />
     <Compile Include="Message.cs" />

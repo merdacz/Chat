@@ -80,6 +80,7 @@
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="ChatPageObject.cs" />
     <Compile Include="ChatTest.cs" />
+    <Compile Include="IChatPageAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebAppHosting.cs" />
     <Compile Include="WebServerFixture.cs" />
@@ -102,6 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chat.Logic\Chat.Logic.csproj">
+      <Project>{80E79648-6A92-4DE1-A685-8CE96C8FF37F}</Project>
+      <Name>Chat.Logic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

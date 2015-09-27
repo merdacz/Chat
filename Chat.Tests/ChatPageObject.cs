@@ -10,7 +10,7 @@
 
     using OpenQA.Selenium;
 
-    public class ChatPageObject
+    public class ChatPageObject : IChatPageAssertions
     {
         private readonly BrowserSession browser;
 
@@ -20,9 +20,17 @@
             this.browser.Visit("/");
         }
 
-        public string Input => this.browser.FindId("msg").Value;
+        private ElementScope MessageBox => this.browser.FindId("msg");
 
-        public IEnumerable<string> Messages
+        private ElementScope UserBox => this.browser.FindId("usr");
+
+        private ElementScope JoinButton => this.browser.FindId("join");
+
+        private ElementScope LeaveButton => this.browser.FindId("leave");
+
+        private string ErrorAlert => this.browser.FindId("error", Options.Invisible).Text;
+
+        private IEnumerable<string> Messages
         {
             get
             {
@@ -30,40 +38,52 @@
             }
         }
 
+        public BrowserSession Session => this.browser;
+
         public ChatPageObject Join(string userName)
         {
-            this.browser.FillIn("usr").With(userName);
-            this.browser.ClickButton("join");
+            this.UserBox.FillInWith(userName);
+            this.JoinButton.Click(); 
             return this;
         }
 
         public ChatPageObject SendMessage(string message)
         {
-            this.browser.FillIn("msg").With(message);
-            this.browser.FindId("msg").SendKeys(Keys.Enter);
+            this.MessageBox.FillInWith(message);
+            this.MessageBox.SendKeys(Keys.Enter);
             Thread.Sleep(500);
             return this;
         }
 
         public ChatPageObject Leave()
         {
-            this.browser.ClickButton("leave");
+            this.LeaveButton.Click();
             return this;
         }
 
-        public void GotMessage(string message)
+        public IChatPageAssertions Should()
+        {
+            return this;
+        }
+
+        void IChatPageAssertions.GetMessage(string message)
         {
             this.Messages.Should().Contain(msg => msg.Contains(message));
         }
 
-        public void InputWasCleared()
+        void IChatPageAssertions.HaveMessageInputCleared()
         {
-            this.Input.Should().BeEmpty();
+            this.MessageBox.Text.Should().BeEmpty();
         }
 
-        public void DidNotGetMessage(string message)
+        void IChatPageAssertions.NotGetMessage(string message)
         {
             this.Messages.Should().NotContain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.GetError(string message)
+        {
+            this.ErrorAlert.Contains(message);
         }
     }
 }

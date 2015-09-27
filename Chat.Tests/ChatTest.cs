@@ -41,7 +41,12 @@
                 alice.Should().GetError("Chat is full");
             }
 
-            chats.ForEach(x => x.Session.Dispose());
+            chats.ForEach(
+                x =>
+                    {
+                        x.Leave();
+                        x.Session.Dispose();
+                    });
         }
 
         [Fact]

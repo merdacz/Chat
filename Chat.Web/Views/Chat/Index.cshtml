@@ -7,16 +7,20 @@
         <h1>Welcome to SignalR based Chat!</h1>
         <p>Please type your messages below, so everyone else can see them.</p>
     </div>
+    <ul id="messages" class="list-group"></ul>
     <div class="form-inline">
         <label for="msg">Your message:</label>
         <input id="msg" type="text" class="form-control input-lg"/>
         <input id="broadcast" type="button" value="Send" class="btn btn-primary"/>
     </div>
-    <br/>
-    <ul id="messages" class="list-group"></ul>
+    
 </div>
 
 <script type="text/javascript">
+    function sendMessage(chatHub) {
+        chatHub.server.sendMessage($('#msg').val());
+        $('#msg').val('');
+    }
     $(function () {
         var chatHub = $.connection.chatHub;
         chatHub.client.newMessage = function(user, message) {
@@ -24,8 +28,13 @@
         };
 
         $.connection.hub.start().done(function () {
+            $('#msg').keyup(function(e) {
+                if (e.keyCode == 13) {
+                    sendMessage(chatHub);
+                }
+            });
             $("#broadcast").click(function () {
-                chatHub.server.sendMessage($('#msg').val());
+                sendMessage(chatHub);
             });
         });
     });

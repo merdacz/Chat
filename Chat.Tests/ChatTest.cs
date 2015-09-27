@@ -38,7 +38,7 @@
             using (var aliceBrowser = BrowserFactory.Create())
             {
                 var alice = new ChatPageObject(aliceBrowser);
-                alice.SendMessage("Old message. ");
+                alice.SendMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
                 {
                     alice.SendMessage($"Message #{num}");
@@ -48,7 +48,7 @@
             using (var bobBrowser = BrowserFactory.Create())
             {
                 var bob = new ChatPageObject(bobBrowser);
-                bob.DidNotGetMessage("Old message. ");
+                bob.DidNotGetMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
                 {
                     bob.GotMessage($"Message #{num}");

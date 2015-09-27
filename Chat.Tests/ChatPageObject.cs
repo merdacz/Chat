@@ -1,6 +1,8 @@
 ﻿namespace Chat.Tests
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
 
     using Coypu;
 
@@ -20,18 +22,25 @@
 
         public string Input => this.browser.FindId("msg").Value;
 
-        public IEnumerable<SnapshotElementScope> Messages => this.browser.FindAllCss("#messages>li");
+        public IEnumerable<string> Messages
+        {
+            get
+            {
+                return this.browser.FindAllCss("#messages>li").Select(x => x.Text);
+            }
+        }
 
         public ChatPageObject SendMessage(string message)
         {
             this.browser.FillIn("msg").With(message);
             this.browser.FindId("msg").SendKeys(Keys.Enter);
+            Thread.Sleep(500);
             return this;
         }
 
         public void GotMessage(string message)
         {
-            this.Messages.Should().Contain(msg => msg.Text.Contains(message));
+            this.Messages.Should().Contain(msg => msg.Contains(message));
         }
 
         public void InputWasCleared()
@@ -41,7 +50,7 @@
 
         public void DidNotGetMessage(string message)
         {
-            this.Messages.Should().NotContain(msg => msg.Text.Contains(message));
+            this.Messages.Should().NotContain(msg => msg.Contains(message));
         }
     }
 }

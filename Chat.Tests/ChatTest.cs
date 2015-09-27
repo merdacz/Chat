@@ -1,16 +1,6 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chat.Tests
+﻿namespace Chat.Tests
 {
-    using System;
-    using System.Threading;
-
     using FluentAssertions;
-
-    using OpenQA.Selenium;
-
     using Xunit;
 
     public class ChatTest : IClassFixture<WebServerFixture>

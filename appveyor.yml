@@ -1,0 +1,7 @@
+version: 1.0.{build}
+environment:
+  UnderTest: True
+before_build:
+- ps: nuget restore
+build:
+  verbosity: minimal

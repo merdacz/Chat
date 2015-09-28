@@ -1,14 +1,11 @@
 ﻿namespace Chat.Web.Controllers
 {
     using System.Collections.Generic;
-    using System.IO.Ports;
-    using System.Linq;
+    using System.Web;
 
     using Chat.Logic;
 
     using Microsoft.AspNet.SignalR;
-    using Microsoft.Owin.Security;
-
  
     public class ChatHub : Hub
     {
@@ -30,13 +27,14 @@
 
         public void Join(string username)
         {
+            var usernameEncoded = HttpUtility.HtmlEncode(username);
             if (Participants.ContainsKey(this.ConnectionId))
             {
                 this.Clients.Caller.invalidOperation($"Already logged in as {Participants[this.ConnectionId]}, please leave chat first. ");
                 return;
             }
 
-            if (Participants.Values.Contains(username))
+            if (Participants.Values.Contains(usernameEncoded))
             {
                 this.Clients.Caller.invalidOperation("Name already taken, please choose another one. ");
                 return;
@@ -48,12 +46,12 @@
                 return;
             }
 
-            Participants.Add(this.ConnectionId, username);
+            Participants.Add(this.ConnectionId, usernameEncoded);
 
             this.Clients.Caller.joinedSuccessfully(Participants.Values, this.messageLog.GetRecentMessages()); 
-            this.Clients.Caller.newMessage(SystemUserName, $"Welcome {username} to our SignalR chat. ");
-            this.Clients.Others.newMessage(SystemUserName, $"{username} joined the chat. ");
-            this.Clients.Others.newUserJoined(username);
+            this.Clients.Caller.newMessage(SystemUserName, $"Welcome {usernameEncoded} to our SignalR chat. ");
+            this.Clients.Others.newMessage(SystemUserName, $"{usernameEncoded} joined the chat. ");
+            this.Clients.Others.newUserJoined(usernameEncoded);
         }
 
         public void Leave()
@@ -75,6 +73,7 @@
 
         public void SendMessage(string message)
         {
+            var messageEncoded = HttpUtility.HtmlEncode(message);
             if (!Participants.ContainsKey(this.ConnectionId))
             {
                 this.Clients.Caller.invalidOperation("Cannot send messages until joined. ");
@@ -82,8 +81,8 @@
             }
 
             string username = Participants[this.ConnectionId];
-            this.messageLog.Save(username, message);
-            this.Clients.All.newMessage(username, message);
+            this.messageLog.Save(username, messageEncoded);
+            this.Clients.All.newMessage(username, messageEncoded);
         }
     }
 }

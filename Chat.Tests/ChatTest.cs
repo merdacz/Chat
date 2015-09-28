@@ -4,6 +4,8 @@
 
     using Chat.Logic;
 
+    using Coypu.Matchers;
+
     using FluentAssertions;
     using Xunit;
 
@@ -117,6 +119,53 @@
                 aliceImpostor.Should().GetError("Name already taken");
 
                 alice.Leave();
+            }
+        }
+
+        [Fact]
+        public void Message_gets_encoded_before_display()
+        {
+            using (var aliceBrowser = BrowserFactory.Create())
+            using (var bobBrowser = BrowserFactory.Create())
+            {
+                var alice = new ChatPageObject(aliceBrowser);
+                var bob = new ChatPageObject(bobBrowser);
+
+                alice.Join("Alice Cooper");
+                bob.Join("Bob Dylan");
+                alice.SendMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
+                
+                // checking against dialog would be problematic in phantomjs.
+                // since it does not support alert directly webdriver's hasdialog won't work.
+                // instead we just explicitly validate encoded version appears on screen.
+                bob.Should().GetMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
+
+                alice.Leave();
+                bob.Leave();
+            }
+        }
+
+        [Fact]
+        public void User_names_gets_encoded_before_display()
+        {
+            using (var aliceBrowser = BrowserFactory.Create())
+            using (var bobBrowser = BrowserFactory.Create())
+            {
+                var alice = new ChatPageObject(aliceBrowser);
+                var bob = new ChatPageObject(bobBrowser);
+
+                alice.Join("Alice Cooper");
+                bob.Join("<script>alert('Hacker');</script>");
+
+                // checking against dialog would be problematic in phantomjs.
+                // since it does not support alert directly webdriver's hasdialog won't work.
+                // instead we just explicitly validate encoded version appears on screen.
+                alice.Should().See("<script>alert('Hacker');</script>");
+                alice.Should().GetMessage("<script>alert('Hacker');");
+                bob.Should().GetMessage("<script>alert('Hacker');");
+
+                alice.Leave();
+                bob.Leave();
             }
         }
     }

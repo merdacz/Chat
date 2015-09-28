@@ -9,5 +9,7 @@ namespace Chat.Tests
         void NotGetMessage(string message);
 
         void GetError(string message);
+
+        void See(string username);
     }
 }

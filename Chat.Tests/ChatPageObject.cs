@@ -38,6 +38,14 @@
             }
         }
 
+        public IEnumerable<string> Participants
+        {
+            get
+            {
+                return this.browser.FindAllCss("#users>li").Select(x => x.Text);
+            }
+        }
+
         public BrowserSession Session => this.browser;
 
         public ChatPageObject Join(string userName)
@@ -69,6 +77,11 @@
         void IChatPageAssertions.GetMessage(string message)
         {
             this.Messages.Should().Contain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.See(string username)
+        {
+            this.Participants.Should().Contain(username);
         }
 
         void IChatPageAssertions.HaveMessageInputCleared()

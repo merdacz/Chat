@@ -46,7 +46,7 @@ namespace Chat.Tests
                 this.iisExpress.Start();
                 this.iisExpress.WaitForExit();
             }
-            catch (Exception)
+            catch 
             {
                 this.iisExpress.CloseMainWindow();
                 this.iisExpress.Dispose();

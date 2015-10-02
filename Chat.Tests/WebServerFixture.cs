@@ -17,7 +17,7 @@ namespace Chat.Tests
 
         public void Dispose()
         {
-            this.iisExpress.Kill();
+            this.SafelyKill(this.iisExpress);
         }
 
         private void StartIisExpress()
@@ -48,9 +48,20 @@ namespace Chat.Tests
             }
             catch 
             {
-                this.iisExpress.Kill();
+                this.SafelyKill(this.iisExpress);
             }
         }
-        
+
+        private void SafelyKill(Process process)
+        {
+            try
+            {
+                process.Kill();
+            }
+            catch (Exception)
+            {
+                // ignore we are shutting down already
+            }
+        }
     }
 }

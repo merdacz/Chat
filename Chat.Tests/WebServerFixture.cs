@@ -17,10 +17,7 @@ namespace Chat.Tests
 
         public void Dispose()
         {
-            if (!this.iisExpress.HasExited)
-            {
-                this.iisExpress.Kill();
-            }
+            this.iisExpress.Kill();
         }
 
         private void StartIisExpress()
@@ -49,7 +46,7 @@ namespace Chat.Tests
                 this.iisExpress.Start();
                 this.iisExpress.WaitForExit();
             }
-            finally 
+            catch 
             {
                 this.iisExpress.Kill();
             }

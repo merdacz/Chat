@@ -51,6 +51,7 @@
         public ChatPageObject Join(string userName)
         {
             this.UserBox.FillInWith(userName);
+            Thread.Sleep(500);
             this.JoinButton.Click(); 
             return this;
         }

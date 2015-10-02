@@ -22,7 +22,9 @@
                 <input id="leave" type="button" value="Leave" class="btn btn-primary"/>
             </div>
             <div class="col-md-10">
-                <ul id="messages" class="list-group"></ul>
+                <div id="messagesContainer" style="overflow: scroll; height: 400px; ">
+                    <ul id="messages" class="list-group"></ul>
+                </div>
                 <div class="form-inline">
                     <label for="msg">Your message:</label>
                     <input id="msg" type="text" class="form-control input-lg" style="width: 80%"/>
@@ -37,18 +39,35 @@
         chatHub.server.sendMessage($('#msg').val());
         $('#msg').val('');
     }
+    var userScrolled = false;
+    var autoScrolling = true;
+    $("#messagesContainer").on('scroll', function () {
+        if (autoScrolling) {
+            return;
+        }
+
+        if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight) {
+            userScrolled = false;
+        } else {
+            userScrolled = true;
+        }
+    });
 
     $(function () {
+       
+
         $("#error").hide();
         $("#auth").show();
         $("#chat").hide();
         var chatHub = $.connection.chatHub;
         chatHub.client.newMessage = function (username, message) {
-            if ($('#messages').find('li').length === 15) {
-                $('#messages').find('li')[0].remove();
-            }
-
             $('#messages').append('<li class="list-group-item"><span class="badge">' + username + '</span>' + message + '</li>');
+            if (!userScrolled) {
+                autoScrolling = true;
+
+                $('#messagesContainer').animate({ scrollTop: $('#messagesContainer').prop("scrollHeight") }, 1000);
+                autoScrolling = false;
+            }
         };
         chatHub.client.invalidOperation = function(errorMessage) {
             $('#error').text(errorMessage).show().delay(3000).fadeOut();
@@ -74,9 +93,16 @@
         }
         chatHub.client.newUserJoined = function(username) {
             $('#users').append('<li id="' + username + '" class="list-group-item">' + username + '</li>');
+            var userEntry = $('#' + username);
+            userEntry.hide();
+            userEntry.fadeIn();
+
         };
         chatHub.client.userleft = function(username) {
-            $('#' + username).remove();
+            var userEntry = $('#' + username);
+            userEntry.fadeOut().delay(1000).queue(function(next) {
+                userEntry.remove();
+            });
         }
 
         $.connection.hub.start().done(function() {

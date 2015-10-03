@@ -11,21 +11,28 @@
 <div class="container">
     <div id="error" class="alert alert-danger" data-bind="fadeOut: error, visible: error"></div>
     <div id="auth" class="form-inline" data-bind="hidden: joined">
-        <input id="usr" type="text" class="form-control input-lg" placeholder="Your display name, at least 5 characters... " data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined()"/>
-        <input id="join" type="button" value="Join" class="btn btn-primary" data-bind="click: join, enable: username.isValid()"/>
+        <input id="usr" type="text" class="form-control input-lg"
+               placeholder="Your display name, at least 5 characters... " 
+               data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined(), enterKey: join"/>
+        <input id="join" type="button" value="Join" class="btn btn-primary" 
+               data-bind="click: join, enable: username.isValid()"/>
     </div>
     <div id="chat" data-bind="visible: joined">
         <div class="row">
             <div class="col-md-2">
-                <ul id="users" class="list-group" data-bind="template: { name: 'userTemplate', foreach: users }"></ul>
+                <ul id="users" class="list-group" 
+                    data-bind="template: { name: 'userTemplate', foreach: users }"></ul>
                 <script type="text/html" id="userTemplate">
                     <li class="list-group-item" data-bind="text: username"></li>
                 </script>
-                <input id="leave" type="button" value="Leave" class="btn btn-primary" data-bind="click: leave" />
+                <input id="leave" type="button" value="Leave" class="btn btn-primary" 
+                       data-bind="click: leave" />
             </div>
             <div class="col-md-10">
-                <div id="messagesContainer" style="overflow-y: scroll; height: 400px; " data-bind="event: { scroll: handleUserScroll }">
-                    <ul id="messages" class="list-group" data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
+                <div id="messagesContainer" style="overflow-y: scroll; height: 400px;" 
+                     data-bind="event: { scroll: handleUserScroll }">
+                    <ul id="messages" class="list-group" 
+                        data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
                     <script type="text/html" id="messageTemplate">
                         <li class="list-group-item" data-bind="text: text">
                             <span class="badge" data-bind="text: username"></span>
@@ -33,9 +40,12 @@
                     </script>
                 </div>
                 <div class="form-inline">
-                    <input id="msg" type="text" class="form-control input-lg" placeholder="Type in your message here... " style="width: 80%" 
-                           data-bind="value: newMessageText, valueUpdate: 'afterkeyup', enterKey: sendMessage, hasFocus: joined()"/>
-                    <input id="broadcast" type="button" value="Send" class="btn btn-primary" data-bind="click: sendMessage, enable: newMessageText.isValid()"/>
+                    <input id="msg" type="text" class="form-control input-lg" 
+                           placeholder="Type in your message here... " style="width: 80%"
+                           data-bind="value: newMessageText, valueUpdate: 'afterkeyup', enterKey: sendMessage, hasFocus: joined()" 
+                           autocomplete="off"/>
+                    <input id="broadcast" type="button" value="Send" class="btn btn-primary" 
+                           data-bind="click: sendMessage, enable: newMessageText.isValid()"/>
                 </div>
             </div>
         </div>
@@ -43,151 +53,11 @@
 </div>
 <script type="text/javascript">
     $(function() {
-        function messageViewModel(username, text) {
-            var self = this;
-
-            self.username = ko.observable(username);
-            self.text = ko.observable(text);
-        }
-
-        function userViewModel(username) {
-            var self = this;
-
-            self.username = ko.observable(username);
-        }
-
-        function chatViewModel() {
-            var self = this;
-
-            self.hub = $.connection.chatHub;
-            self.error = ko.observable('');
-            self.username = ko.observable().extend({ required: true, minLength: 5 });
-            self.joined = ko.observable(false);
-            self.newMessageText = ko.observable().extend({ required: true });
-            self.users = ko.observableArray();
-            self.messages = ko.observableArray();
-
-            self.userScrolled = false;
-            self.autoScrolling = false;
-
-            self.hub.client.invalidOperation = function (errorMessage) {
-                self.error(errorMessage); 
-            };
-
-            self.hub.client.joinedSuccessfully = function (userList, recentMessages) {
-                var mappedUsers = $.map(userList, function(usr) {
-                    return new userViewModel(usr);
-                });
-                self.users(mappedUsers);
-               
-                var mappedMessages = $.map(recentMessages, function (msg) {
-                    return new messageViewModel(msg.UserName, msg.Text);
-                });
-                self.messages(mappedMessages);
-                self.joined(true);
-                $("#msg").focus();
-            }
-
-            self.hub.client.leftSuccessfully = function () {
-                self.joined(false);
-            }
-
-            self.hub.client.newUserJoined = function (username) {
-                self.users.push(new userViewModel(username)); 
-            };
-
-            self.hub.client.userLeft = function (username) {
-                self.users.remove(function (item) {
-                    return item.username() === username;
-                });
-            };
-
-            self.hub.client.newMessage = function (username, message) {
-                self.messages.push(new messageViewModel(username, message));
-                self.adjustScroll();
-            };
-
-
-            self.sendMessage = function () {
-                if (!self.newMessageText()) {
-                    return;
-                }
-
-                self.hub.server.sendMessage(this.newMessageText());
-                self.newMessageText("");
-            };
-
-            self.join = function () {
-                self.messages.removeAll();
-                self.users.removeAll();
-                self.hub.server.join(self.username());
-            };
-
-            self.leave = function () {
-                self.hub.server.leave();
-            };
-
-            self.adjustScroll = function () {
-                if (!self.userScrolled) {
-                    self.autoScrolling = true;
-                    var container = $("#messagesContainer");
-                    container.animate({ scrollTop: container.prop("scrollHeight") }, 500);
-                    self.autoScrolling = false;
-                }
-            };
-
-            self.handleUserScroll = function() {
-                if (self.autoScrolling) {
-                    return;
-                }
-
-                var container = $("#messagesContainer");
-                if (container.scrollTop() + container.innerHeight() >= container.prop("scrollHeight")) {
-                    self.userScrolled = false;
-                } else {
-                    self.userScrolled = true;
-                }
-            };
-        };
-
-        ko.bindingHandlers.fadeOut = {
-            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-                var value = valueAccessor();
-                var valueUnwrapped = ko.unwrap(value);
-                $(element).text(valueUnwrapped).delay(3000).fadeOut();
-                if (valueUnwrapped) {
-                    viewModel.error(' '); // makes next error to show up correctly even if it is the same as previous one. 
-                }
-            }
-        };
-
-        ko.bindingHandlers.enterKey = {
-            init: function (element, valueAccessor, allBindings, viewModel) {
-                var callback = valueAccessor();
-                $(element).keypress(function (event) {
-                    var keyCode = (event.which ? event.which : event.keyCode);
-                    if (keyCode === 13) {
-                        callback.call(viewModel);
-                        return false;
-                    }
-                    return true;
-                });
-            }
-        };
-
-        ko.bindingHandlers.hidden = {
-            update: function (element, valueAccessor) {
-                ko.bindingHandlers.visible.update(element, function () {
-                    return !ko.utils.unwrapObservable(valueAccessor());
-                });
-            }
-        };
-
         $("input[placeholder]").each(function () {
             $(this).attr('size', $(this).attr('placeholder').length);
         });
 
-        var chat = new chatViewModel();
+        var chat = new chatViewModel($.connection.chatHub);
         ko.validation.init({ insertMessages : false });
         ko.applyBindings(chat);
 

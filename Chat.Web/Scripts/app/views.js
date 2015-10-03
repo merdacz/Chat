@@ -11,10 +11,10 @@ function userViewModel(username) {
     self.username = ko.observable(username);
 }
 
-function chatViewModel() {
+function chatViewModel(hub) {
     var self = this;
 
-    self.hub = $.connection.chatHub;
+    self.hub = hub;
     self.error = ko.observable('');
     self.username = ko.observable().extend({ required: true, minLength: 5 });
     self.joined = ko.observable(false);

@@ -57,7 +57,7 @@
             $(this).attr('size', $(this).attr('placeholder').length);
         });
 
-        var chat = new chatViewModel();
+        var chat = new chatViewModel($.connection.chatHub);
         ko.validation.init({ insertMessages : false });
         ko.applyBindings(chat);
 

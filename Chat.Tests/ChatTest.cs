@@ -33,13 +33,13 @@
             {
                 var chat = new ChatPageObject(BrowserFactory.Create());
                 chats.Add(chat);
-                chat.Join($"User#{i}");
+                chat.Join();
             }
 
             using (var aliceBrowser = BrowserFactory.Create())
             {
                 var alice = new ChatPageObject(aliceBrowser);
-                alice.Join("Alice Cooper");
+                alice.Join();
                 alice.Should().GetError("Chat is full");
             }
 
@@ -60,8 +60,8 @@
                 var alice = new ChatPageObject(aliceBrowser);
                 var bob = new ChatPageObject(bobBrowser);
 
-                alice.Join("Alice Cooper");
-                bob.Join("Bob Dylan");
+                alice.Join();
+                bob.Join();
                 alice.SendMessage("Hello Bob!");
 
                 alice.Should().GetMessage("Hello Bob!");
@@ -79,7 +79,7 @@
             using (var aliceBrowser = BrowserFactory.Create())
             {
                 var alice = new ChatPageObject(aliceBrowser);
-                alice.Join("Alice Cooper");
+                alice.Join();
                 alice.SendMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
                 {
@@ -92,7 +92,7 @@
             using (var bobBrowser = BrowserFactory.Create())
             {
                 var bob = new ChatPageObject(bobBrowser);
-                bob.Join("Bob Dylan");
+                bob.Join();
 
                 bob.Should().NotGetMessage("Old message.");
                 for (int num = 1; num <= 15; num++)
@@ -131,8 +131,8 @@
                 var alice = new ChatPageObject(aliceBrowser);
                 var bob = new ChatPageObject(bobBrowser);
 
-                alice.Join("Alice Cooper");
-                bob.Join("Bob Dylan");
+                alice.Join();
+                bob.Join();
                 alice.SendMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
                 
                 // checking against dialog would be problematic in phantomjs.
@@ -154,7 +154,7 @@
                 var alice = new ChatPageObject(aliceBrowser);
                 var bob = new ChatPageObject(bobBrowser);
 
-                alice.Join("Alice Cooper");
+                alice.Join();
                 bob.Join("<script>alert('Hacker');</script>");
 
                 // checking against dialog would be problematic in phantomjs.

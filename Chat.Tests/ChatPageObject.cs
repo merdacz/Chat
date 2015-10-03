@@ -1,6 +1,8 @@
 ﻿namespace Chat.Tests
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading;
 
@@ -48,11 +50,17 @@
 
         public BrowserSession Session => this.browser;
 
+        public ChatPageObject Join()
+        {
+            var userName = RandomShortString();
+            return this.Join(userName);
+        }
+
         public ChatPageObject Join(string userName)
         {
             this.UserBox.FillInWith(userName);
             Thread.Sleep(500);
-            this.JoinButton.Click(); 
+            this.JoinButton.Click();
             return this;
         }
 
@@ -99,5 +107,13 @@
         {
             this.ErrorAlert.Contains(message);
         }
+
+        public static string RandomShortString()
+        {
+            string path = Path.GetRandomFileName();
+            path = path.Replace(".", "");
+            return path;
+        }
+
     }
 }

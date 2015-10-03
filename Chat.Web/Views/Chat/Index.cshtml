@@ -34,7 +34,8 @@
                     <ul id="messages" class="list-group" 
                         data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
                     <script type="text/html" id="messageTemplate">
-                        <li class="list-group-item" data-bind="text: text">
+                        <li class="list-group-item">
+                            <span data-bind="text: text"></span>
                             <span class="badge" data-bind="text: username"></span>
                         </li>
                     </script>

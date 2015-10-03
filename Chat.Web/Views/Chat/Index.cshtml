@@ -11,21 +11,28 @@
 <div class="container">
     <div id="error" class="alert alert-danger" data-bind="fadeOut: error, visible: error"></div>
     <div id="auth" class="form-inline" data-bind="hidden: joined">
-        <input id="usr" type="text" class="form-control input-lg" placeholder="Your display name, at least 5 characters... " data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined()"/>
-        <input id="join" type="button" value="Join" class="btn btn-primary" data-bind="click: join, enable: username.isValid()"/>
+        <input id="usr" type="text" class="form-control input-lg"
+               placeholder="Your display name, at least 5 characters... " 
+               data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined()"/>
+        <input id="join" type="button" value="Join" class="btn btn-primary" 
+               data-bind="click: join, enable: username.isValid()"/>
     </div>
     <div id="chat" data-bind="visible: joined">
         <div class="row">
             <div class="col-md-2">
-                <ul id="users" class="list-group" data-bind="template: { name: 'userTemplate', foreach: users }"></ul>
+                <ul id="users" class="list-group" 
+                    data-bind="template: { name: 'userTemplate', foreach: users }"></ul>
                 <script type="text/html" id="userTemplate">
                     <li class="list-group-item" data-bind="text: username"></li>
                 </script>
-                <input id="leave" type="button" value="Leave" class="btn btn-primary" data-bind="click: leave" />
+                <input id="leave" type="button" value="Leave" class="btn btn-primary" 
+                       data-bind="click: leave" />
             </div>
             <div class="col-md-10">
-                <div id="messagesContainer" style="overflow-y: scroll; height: 400px; " data-bind="event: { scroll: handleUserScroll }">
-                    <ul id="messages" class="list-group" data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
+                <div id="messagesContainer" style="overflow-y: scroll; height: 400px;" 
+                     data-bind="event: { scroll: handleUserScroll }">
+                    <ul id="messages" class="list-group" 
+                        data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
                     <script type="text/html" id="messageTemplate">
                         <li class="list-group-item" data-bind="text: text">
                             <span class="badge" data-bind="text: username"></span>
@@ -33,9 +40,12 @@
                     </script>
                 </div>
                 <div class="form-inline">
-                    <input id="msg" type="text" class="form-control input-lg" placeholder="Type in your message here... " style="width: 80%" 
-                           data-bind="value: newMessageText, valueUpdate: 'afterkeyup', enterKey: sendMessage, hasFocus: joined()"/>
-                    <input id="broadcast" type="button" value="Send" class="btn btn-primary" data-bind="click: sendMessage, enable: newMessageText.isValid()"/>
+                    <input id="msg" type="text" class="form-control input-lg" 
+                           placeholder="Type in your message here... " style="width: 80%"
+                           data-bind="value: newMessageText, valueUpdate: 'afterkeyup', enterKey: sendMessage, hasFocus: joined()" 
+                           autocomplete="off"/>
+                    <input id="broadcast" type="button" value="Send" class="btn btn-primary" 
+                           data-bind="click: sendMessage, enable: newMessageText.isValid()"/>
                 </div>
             </div>
         </div>

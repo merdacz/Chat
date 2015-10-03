@@ -64,7 +64,7 @@ function chatViewModel() {
 
 
     self.sendMessage = function () {
-        if (!self.newMessageText()) {
+        if (!self.newMessageText.isValid()) {
             return;
         }
 
@@ -73,6 +73,9 @@ function chatViewModel() {
     };
 
     self.join = function () {
+        if (!self.username.isValid()) {
+            return;
+        }
         self.messages.removeAll();
         self.users.removeAll();
         self.hub.server.join(self.username());

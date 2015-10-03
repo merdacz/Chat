@@ -13,7 +13,7 @@
     <div id="auth" class="form-inline" data-bind="hidden: joined">
         <input id="usr" type="text" class="form-control input-lg"
                placeholder="Your display name, at least 5 characters... " 
-               data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined()"/>
+               data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined(), enterKey: join"/>
         <input id="join" type="button" value="Join" class="btn btn-primary" 
                data-bind="click: join, enable: username.isValid()"/>
     </div>

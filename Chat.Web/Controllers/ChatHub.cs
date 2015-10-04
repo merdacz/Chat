@@ -18,8 +18,8 @@
 
         private static readonly string SystemUserName = "system";
 
-        private static readonly IDictionary<string, string> Participants = new Dictionary<string, string>();
-         
+        private static IDictionary<string, string> Participants = new Dictionary<string, string>();
+
         public ChatHub(IMessageLog messageLog, IChatConfiguration configuration)
         {
             this.messageLog = messageLog;
@@ -58,7 +58,7 @@
         {
             if (!Participants.ContainsKey(this.ConnectionId))
             {
-                this.Clients.Caller.ivalidOperation("Already left the chat. ");
+                this.Clients.Caller.invalidOperation("Already left the chat. ");
                 return;
             }
 
@@ -81,6 +81,11 @@
             string username = Participants[this.ConnectionId];
             this.messageLog.Save(username, message);
             this.Clients.All.newMessage(username, message);
+        }
+
+        internal static void ResetParticipants()
+        {
+            Participants = new Dictionary<string, string>();
         }
     }
 }

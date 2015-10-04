@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading;
 
@@ -52,7 +51,7 @@
 
         public ChatPageObject Join()
         {
-            var userName = RandomShortString();
+            var userName = A.RandomShortString();
             return this.Join(userName);
         }
 
@@ -107,13 +106,5 @@
         {
             this.ErrorAlert.Contains(message);
         }
-
-        public static string RandomShortString()
-        {
-            string path = Path.GetRandomFileName();
-            path = path.Replace(".", "");
-            return path;
-        }
-
     }
 }

@@ -9,7 +9,7 @@
     using FluentAssertions;
     using Xunit;
 
-    public class ChatTest : IClassFixture<WebServerFixture>
+    public class WebBrowserTests : IClassFixture<WebServerFixture>
     { 
         private readonly IChatConfiguration configuration = new ChatConfiguration();
 

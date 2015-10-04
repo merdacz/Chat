@@ -1,16 +1,15 @@
-﻿namespace Chat.Tests
+﻿namespace Chat.Tests.Web
 {
     using System.Collections.Generic;
 
     using Chat.Logic;
 
-    using Coypu.Matchers;
-
     using FluentAssertions;
+
     using Xunit;
 
-    public class ChatTest : IClassFixture<WebServerFixture>
-    { 
+    public class WebBrowserTests : IClassFixture<WebServerFixture>
+    {
         private readonly IChatConfiguration configuration = new ChatConfiguration();
 
         [Fact]
@@ -21,34 +20,6 @@
                 alice.Visit("/");
                 alice.Title.Should().Contain("Welcome");
             }
-        }
-
-        [Fact]
-        public void Cannot_join_once_chat_capacity_is_reached()
-        {
-            int maxChatCapacity = this.configuration.GetMaxCapacity();
-            var chats = new List<ChatPageObject>();
-
-            for (int i = 0; i < maxChatCapacity; i++)
-            {
-                var chat = new ChatPageObject(BrowserFactory.Create());
-                chats.Add(chat);
-                chat.Join();
-            }
-
-            using (var aliceBrowser = BrowserFactory.Create())
-            {
-                var alice = new ChatPageObject(aliceBrowser);
-                alice.Join();
-                alice.Should().GetError("Chat is full");
-            }
-
-            chats.ForEach(
-                x =>
-                    {
-                        x.Leave();
-                        x.Session.Dispose();
-                    });
         }
 
         [Fact]
@@ -134,7 +105,7 @@
                 alice.Join();
                 bob.Join();
                 alice.SendMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
-                
+
                 // checking against dialog would be problematic in phantomjs.
                 // since it does not support alert directly webdriver's hasdialog won't work.
                 // instead we just explicitly validate encoded version appears on screen.

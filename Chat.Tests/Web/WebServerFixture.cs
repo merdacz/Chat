@@ -1,4 +1,4 @@
-namespace Chat.Tests
+namespace Chat.Tests.Web
 {
     using System;
     using System.Diagnostics;
@@ -46,7 +46,7 @@ namespace Chat.Tests
                 this.iisExpress.Start();
                 this.iisExpress.WaitForExit();
             }
-            catch 
+            catch
             {
                 this.SafelyKill(this.iisExpress);
             }

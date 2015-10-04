@@ -1,4 +1,4 @@
-namespace Chat.Tests
+namespace Chat.Tests.Web
 {
     public interface IChatPageAssertions
     {

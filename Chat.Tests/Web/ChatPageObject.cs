@@ -1,8 +1,6 @@
-﻿namespace Chat.Tests
+﻿namespace Chat.Tests.Web
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading;
 
@@ -50,9 +48,34 @@
 
         public BrowserSession Session => this.browser;
 
+        void IChatPageAssertions.GetMessage(string message)
+        {
+            this.Messages.Should().Contain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.See(string username)
+        {
+            this.Participants.Should().Contain(username);
+        }
+
+        void IChatPageAssertions.HaveMessageInputCleared()
+        {
+            this.MessageBox.Text.Should().BeEmpty();
+        }
+
+        void IChatPageAssertions.NotGetMessage(string message)
+        {
+            this.Messages.Should().NotContain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.GetError(string message)
+        {
+            this.ErrorAlert.Contains(message);
+        }
+
         public ChatPageObject Join()
         {
-            var userName = RandomShortString();
+            var userName = A.RandomShortString();
             return this.Join(userName);
         }
 
@@ -82,38 +105,5 @@
         {
             return this;
         }
-
-        void IChatPageAssertions.GetMessage(string message)
-        {
-            this.Messages.Should().Contain(msg => msg.Contains(message));
-        }
-
-        void IChatPageAssertions.See(string username)
-        {
-            this.Participants.Should().Contain(username);
-        }
-
-        void IChatPageAssertions.HaveMessageInputCleared()
-        {
-            this.MessageBox.Text.Should().BeEmpty();
-        }
-
-        void IChatPageAssertions.NotGetMessage(string message)
-        {
-            this.Messages.Should().NotContain(msg => msg.Contains(message));
-        }
-
-        void IChatPageAssertions.GetError(string message)
-        {
-            this.ErrorAlert.Contains(message);
-        }
-
-        public static string RandomShortString()
-        {
-            string path = Path.GetRandomFileName();
-            path = path.Replace(".", "");
-            return path;
-        }
-
     }
 }

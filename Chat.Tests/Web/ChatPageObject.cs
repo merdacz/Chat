@@ -1,6 +1,5 @@
-﻿namespace Chat.Tests
+﻿namespace Chat.Tests.Web
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -49,6 +48,31 @@
 
         public BrowserSession Session => this.browser;
 
+        void IChatPageAssertions.GetMessage(string message)
+        {
+            this.Messages.Should().Contain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.See(string username)
+        {
+            this.Participants.Should().Contain(username);
+        }
+
+        void IChatPageAssertions.HaveMessageInputCleared()
+        {
+            this.MessageBox.Text.Should().BeEmpty();
+        }
+
+        void IChatPageAssertions.NotGetMessage(string message)
+        {
+            this.Messages.Should().NotContain(msg => msg.Contains(message));
+        }
+
+        void IChatPageAssertions.GetError(string message)
+        {
+            this.ErrorAlert.Contains(message);
+        }
+
         public ChatPageObject Join()
         {
             var userName = A.RandomShortString();
@@ -80,31 +104,6 @@
         public IChatPageAssertions Should()
         {
             return this;
-        }
-
-        void IChatPageAssertions.GetMessage(string message)
-        {
-            this.Messages.Should().Contain(msg => msg.Contains(message));
-        }
-
-        void IChatPageAssertions.See(string username)
-        {
-            this.Participants.Should().Contain(username);
-        }
-
-        void IChatPageAssertions.HaveMessageInputCleared()
-        {
-            this.MessageBox.Text.Should().BeEmpty();
-        }
-
-        void IChatPageAssertions.NotGetMessage(string message)
-        {
-            this.Messages.Should().NotContain(msg => msg.Contains(message));
-        }
-
-        void IChatPageAssertions.GetError(string message)
-        {
-            this.ErrorAlert.Contains(message);
         }
     }
 }

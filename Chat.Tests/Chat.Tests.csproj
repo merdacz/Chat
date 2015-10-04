@@ -102,14 +102,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="A.cs" />
-    <Compile Include="BrowserFactory.cs" />
-    <Compile Include="ChatPageObject.cs" />
-    <Compile Include="LogicTests.cs" />
-    <Compile Include="WebBrowserTests.cs" />
-    <Compile Include="IChatPageAssertions.cs" />
+    <Compile Include="Logic\ClientOperationsSpy.cs" />
+    <Compile Include="Logic\IChatHubAssertions.cs" />
+    <Compile Include="Logic\IClientOperations.cs" />
+    <Compile Include="Web\BrowserFactory.cs" />
+    <Compile Include="Logic\ChatHubFixture.cs" />
+    <Compile Include="Web\ChatPageObject.cs" />
+    <Compile Include="Logic\LogicTests.cs" />
+    <Compile Include="Web\WebBrowserTests.cs" />
+    <Compile Include="Web\IChatPageAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebAppHosting.cs" />
-    <Compile Include="WebServerFixture.cs" />
+    <Compile Include="Web\WebAppHosting.cs" />
+    <Compile Include="Web\WebServerFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -122,9 +126,6 @@
     <Content Include="..\packages\WebDriver.ChromeDriver.26.14.313457.1\tools\ChromeDriver.exe">
       <Link>ChromeDriver.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="phantomjs-license.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

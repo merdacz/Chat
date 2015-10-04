@@ -13,6 +13,8 @@ namespace Chat.Tests.Logic
     {
         private ChatHub createdInstance = null;
 
+        private IMessageLog messageLog = null;
+
         public IChatHubAssertions Checks => this;
 
         public ClientOperationsSpy Caller { get; private set; }
@@ -23,23 +25,51 @@ namespace Chat.Tests.Logic
 
         public int MaxCapcity => 4;
 
-        public ChatHub CreateSut(IMessageLog messageLog = null)
+        private ChatHubFixture()
+        {
+            this.messageLog = new Mock<IMessageLog>().Object;
+        }
+
+        public static ChatHubFixture Create()
+        {
+            return new ChatHubFixture();
+        }
+
+        public ChatHubFixture With(IMessageLog messageLog)
+        {
+            this.messageLog = messageLog;
+            return this;
+        }
+
+        public ChatHub CreateSut()
         {
             if (this.createdInstance != null)
             {
-                throw new InvalidOperationException("Fixture support creation only of a single createdInstance instance. ");
+                throw new InvalidOperationException(
+                    "Fixture supports creation only of a single createdInstance instance. ");
             }
 
-            if (messageLog == null)
-            {
-                messageLog = new Mock<IMessageLog>().Object;
-            }
+            Chat chat = this.CreateChat();
+            var hub = this.createdInstance = new ChatHub(chat);
 
+            this.InitializeClients(hub);
+            this.RegisterContext();
+
+            return hub;
+        }
+
+        private Chat CreateChat()
+        {
             var configuration = new Mock<IChatConfiguration>();
             configuration.Setup(x => x.GetMaxCapacity()).Returns(this.MaxCapcity);
+
             var participants = new ParticipantsStore();
-            var chat = new Chat(participants, configuration.Object, messageLog);
-            var hub = new ChatHub(chat);
+            var chat = new Chat(participants, configuration.Object, this.messageLog);
+            return chat;
+        }
+
+        private void InitializeClients(ChatHub hub)
+        {
             var clients = new Mock<IHubCallerConnectionContext<dynamic>>();
             hub.Clients = clients.Object;
             this.Others = new ClientOperationsSpy();
@@ -48,18 +78,18 @@ namespace Chat.Tests.Logic
             clients.Setup(x => x.Caller).Returns(this.Caller);
             clients.Setup(x => x.All).Returns(this.All);
             clients.Setup(x => x.Others).Returns(this.Others);
+        }
 
-            var context = new Mock<HubCallerContext>();
-            context.SetupGet(x => x.ConnectionId).Returns(A.RandomShortString());
-            hub.Context = context.Object;
-
-            this.createdInstance = hub;
-            return hub;
+        private void RegisterContext()
+        {
+            this.createdInstance.Context = new Mock<HubCallerContext>().Object;
+            this.NewSession();
         }
 
         public void NewSession()
         {
-            Mock.Get(this.createdInstance.Context).SetupGet(x => x.ConnectionId).Returns(A.RandomShortString());
+            Mock.Get(this.createdInstance.Context)
+                .SetupGet(x => x.ConnectionId).Returns(A.RandomShortString());
         }
     }
 }

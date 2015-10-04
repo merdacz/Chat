@@ -1,7 +1,6 @@
 ﻿namespace Chat.Tests.Logic
 {
     using Chat.Logic;
-    using Chat.Web.Controllers;
 
     using FluentAssertions;
 
@@ -12,10 +11,10 @@
         [Fact]
         public void Chat_joining()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
             var alice = A.RandomShortString();
-            hub.Join(alice);
+            sut.Join(alice);
 
             var check = fixture.Checks;
             check.Others.LastUserJoined.Should().Be(alice);
@@ -24,11 +23,11 @@
         [Fact]
         public void Chat_leaving()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
             var alice = A.RandomShortString();
-            hub.Join(alice);
-            hub.Leave();
+            sut.Join(alice);
+            sut.Leave();
 
             var check = fixture.Checks;
             check.All.LastUserLeft.Should().Be(alice);
@@ -37,9 +36,9 @@
         [Fact]
         public void Leaving_without_joining_will_fail()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
-            hub.Leave();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
+            sut.Leave();
 
             var check = fixture.Checks;
             check.Caller.LastInvalidMessage.Should().NotBeNullOrEmpty();
@@ -48,9 +47,9 @@
         [Fact]
         public void Sending_message_before_joining_is_not_allowed()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
-            hub.SendMessage("Hello everybody!");
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
+            sut.SendMessage("Hello everybody!");
             var check = fixture.Checks;
             check.Caller.LastInvalidMessage.Should().NotBeNullOrEmpty();
         }
@@ -58,11 +57,11 @@
         [Fact]
         public void Once_joined_user_can_send_messages()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
             var alice = A.RandomShortString();
-            hub.Join(alice);
-            hub.SendMessage("Hello everybody!");
+            sut.Join(alice);
+            sut.SendMessage("Hello everybody!");
             var check = fixture.Checks;
             check.All.LastMessage.UserName.Should().Be(alice);
             check.All.LastMessage.Text.Should().Be("Hello everybody!");
@@ -71,14 +70,14 @@
         [Fact]
         public void Duplicated_username_wont_work()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
             var alice = A.RandomShortString();
 
             fixture.NewSession();
-            hub.Join(alice);
+            sut.Join(alice);
             fixture.NewSession();
-            hub.Join(alice);
+            sut.Join(alice);
 
             var check = fixture.Checks;
             check.Caller.LastInvalidMessage.Should().NotBeNullOrEmpty();
@@ -87,10 +86,10 @@
         [Fact]
         public void Need_to_leave_room_before_joining_again()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
-            hub.Join("Alice Cooper");
-            hub.Join("Bob Dylan");
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
+            sut.Join("Alice Cooper");
+            sut.Join("Bob Dylan");
             var check = fixture.Checks;
             check.Caller.LastInvalidMessage.Should().NotBeNullOrEmpty();
         }
@@ -98,17 +97,17 @@
         [Fact]
         public void Gets_messages_upon_joining_chat()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut(new InMemoryMessageLog());
-            hub.Join(A.RandomShortString());
-            hub.SendMessage("Old message. ");
+            var fixture = ChatHubFixture.Create().With(new InMemoryMessageLog());
+            var sut = fixture.CreateSut();
+            sut.Join(A.RandomShortString());
+            sut.SendMessage("Old message. ");
             for (int i = 1; i <= 15; i++)
             {
-                hub.SendMessage($"Message #{i}. ");
+                sut.SendMessage($"Message #{i}. ");
             }
 
             fixture.NewSession();
-            hub.Join(A.RandomShortString());
+            sut.Join(A.RandomShortString());
             var check = fixture.Checks;
             check.Caller.LastMessagesUponJoin.Should().HaveCount(15);
         }
@@ -116,12 +115,12 @@
         [Fact]
         public void Cannot_join_once_limit_hit()
         {
-            var fixture = new ChatHubFixture();
-            var hub = fixture.CreateSut();
+            var fixture = ChatHubFixture.Create();
+            var sut = fixture.CreateSut();
             for (int i = 0; i <= fixture.MaxCapcity; i++)
             {
                 fixture.NewSession();
-                hub.Join(A.RandomShortString());
+                sut.Join(A.RandomShortString());
             }
 
             var check = fixture.Checks;

@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="A.cs" />
+    <Compile Include="Logic\InMemoryMessageLog.cs" />
     <Compile Include="Logic\ClientOperationsSpy.cs" />
     <Compile Include="Logic\IChatHubAssertions.cs" />
     <Compile Include="Logic\IClientOperations.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Web\WebServerFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -9,5 +9,10 @@
         {
             return int.Parse(ConfigurationManager.AppSettings["Chat.MaxCapacity"]); 
         }
+
+        public int GetMessageCountOnJoin()
+        {
+            return int.Parse(ConfigurationManager.AppSettings["Chat.MessageCountOnJoin"]);
+        }
     }
 }

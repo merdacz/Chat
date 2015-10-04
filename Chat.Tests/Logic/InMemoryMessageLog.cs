@@ -1,6 +1,8 @@
-﻿namespace Chat.Logic
+﻿namespace Chat.Tests.Logic
 {
     using System.Collections.Generic;
+
+    using Chat.Logic;
 
     public class InMemoryMessageLog : IMessageLog
     {
@@ -10,9 +12,9 @@
 
         private readonly int recentMessagesLimit;
 
-        public InMemoryMessageLog(IChatConfiguration configuration)
+        public InMemoryMessageLog(int recentMessagesLimit)
         {
-            this.recentMessagesLimit = configuration.GetMessageCountOnJoin();
+            this.recentMessagesLimit = recentMessagesLimit;
         }
 
 

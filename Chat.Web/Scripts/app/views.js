@@ -15,6 +15,7 @@ function chatViewModel(hub) {
     var self = this;
 
     self.hub = hub;
+    self.initialized = ko.observable(false);
     self.error = ko.observable('');
     self.username = ko.observable().extend({ required: true, minLength: 5 });
     self.joined = ko.observable(false);
@@ -26,10 +27,12 @@ function chatViewModel(hub) {
     self.autoScrolling = false;
 
     self.hub.client.invalidOperation = function (errorMessage) {
+        $("#join").button("reset");
         self.error(errorMessage);
     };
 
     self.hub.client.joinedSuccessfully = function (userList, recentMessages) {
+        $("#join").button("reset");
         var mappedUsers = $.map(userList, function (usr) {
             return new userViewModel(usr);
         });
@@ -73,6 +76,7 @@ function chatViewModel(hub) {
     };
 
     self.join = function () {
+        $("#join").button("loading");
         if (!self.username.isValid()) {
             return;
         }

@@ -8,13 +8,14 @@
         </div>
     </div>
 </nav>
-<div class="container">
+<div class="container" data-bind="visible: initialized">
     <div id="error" class="alert alert-danger" data-bind="fadeOut: error, visible: error"></div>
     <div id="auth" class="form-inline" data-bind="hidden: joined">
         <input id="usr" type="text" class="form-control input-lg"
                placeholder="Your display name, at least 5 characters... " 
                data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined(), enterKey: join"/>
-        <input id="join" type="button" value="Join" class="btn btn-primary" 
+        <input id="join" type="button" value="Join" class="btn btn-primary"
+               data-loading-text="Joining..."
                data-bind="click: join, enable: username.isValid()"/>
     </div>
     <div id="chat" data-bind="visible: joined">
@@ -29,7 +30,7 @@
                        data-bind="click: leave" />
             </div>
             <div class="col-md-10">
-                <div id="messagesContainer" style="overflow-y: scroll; height: 400px;" 
+                <div id="messagesContainer" style="overflow-y: scroll; height: 600px" 
                      data-bind="event: { scroll: handleUserScroll }">
                     <ul id="messages" class="list-group" 
                         data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
@@ -54,14 +55,16 @@
 </div>
 <script type="text/javascript">
     $(function() {
-        $("input[placeholder]").each(function () {
+
+        $("input[placeholder]").each(function() {
             $(this).attr('size', $(this).attr('placeholder').length);
         });
 
         var chat = new chatViewModel($.connection.chatHub);
-        ko.validation.init({ insertMessages : false });
+        ko.validation.init({ insertMessages: false });
         ko.applyBindings(chat);
-
-        $.connection.hub.start();
+        $.connection.hub.start().done(function () {
+            chat.initialized(true);
+        });
     });
 </script>

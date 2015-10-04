@@ -21,6 +21,8 @@ namespace Chat.Tests.Logic
 
         public ClientOperationsSpy Others { get; private set; }
 
+        public int MaxCapcity => 4;
+
         public ChatHub CreateSut(IMessageLog messageLog = null)
         {
             if (this.createdInstance != null)
@@ -33,8 +35,11 @@ namespace Chat.Tests.Logic
                 messageLog = new Mock<IMessageLog>().Object;
             }
 
-            var configuration = new ChatConfiguration();
-            var hub = new ChatHub(messageLog, configuration);
+            var configuration = new Mock<IChatConfiguration>();
+            configuration.Setup(x => x.GetMaxCapacity()).Returns(this.MaxCapcity);
+            var participants = new ParticipantsStore();
+            var chat = new Chat(participants, configuration.Object, messageLog);
+            var hub = new ChatHub(chat);
             var clients = new Mock<IHubCallerConnectionContext<dynamic>>();
             hub.Clients = clients.Object;
             this.Others = new ClientOperationsSpy();
@@ -45,9 +50,6 @@ namespace Chat.Tests.Logic
             clients.Setup(x => x.Others).Returns(this.Others);
 
             var context = new Mock<HubCallerContext>();
-
-            //// TODO temporary workaround to static createdInstance state
-            ChatHub.ResetParticipants();
             context.SetupGet(x => x.ConnectionId).Returns(A.RandomShortString());
             hub.Context = context.Object;
 

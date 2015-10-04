@@ -118,8 +118,7 @@
         {
             var fixture = new ChatHubFixture();
             var hub = fixture.CreateSut();
-            var max = new ChatConfiguration().GetMaxCapacity();
-            for (int i = 0; i <= max; i++)
+            for (int i = 0; i <= fixture.MaxCapcity; i++)
             {
                 fixture.NewSession();
                 hub.Join(A.RandomShortString());

@@ -10,11 +10,13 @@
     using Owin;
     public class Startup
     {
+        private static readonly ParticipantsStore participantsStore = new ParticipantsStore();
+
         public void Configuration(IAppBuilder app)
         {
             GlobalHost.DependencyResolver.Register(
                 typeof(ChatHub),
-                () => new ChatHub(new InMemoryMessageLog(), new ChatConfiguration()));
+                () => new ChatHub(new Chat(participantsStore, new ChatConfiguration(), new InMemoryMessageLog())));
             app.MapSignalR();
         }
     }

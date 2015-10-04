@@ -23,34 +23,6 @@
         }
 
         [Fact]
-        public void Cannot_join_once_chat_capacity_is_reached()
-        {
-            int maxChatCapacity = this.configuration.GetMaxCapacity();
-            var chats = new List<ChatPageObject>();
-
-            for (int i = 0; i < maxChatCapacity; i++)
-            {
-                var chat = new ChatPageObject(BrowserFactory.Create());
-                chats.Add(chat);
-                chat.Join();
-            }
-
-            using (var aliceBrowser = BrowserFactory.Create())
-            {
-                var alice = new ChatPageObject(aliceBrowser);
-                alice.Join();
-                alice.Should().GetError("Chat is full");
-            }
-
-            chats.ForEach(
-                x =>
-                    {
-                        x.Leave();
-                        x.Session.Dispose();
-                    });
-        }
-
-        [Fact]
         public void Pressing_Enter_will_send_message()
         {
             using (var aliceBrowser = BrowserFactory.Create())

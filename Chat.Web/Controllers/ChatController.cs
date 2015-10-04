@@ -2,8 +2,6 @@
 {
     using System.Web.Mvc;
 
-    using Chat.Logic;
-
     public class ChatController : Controller
     {
         public ActionResult Index()

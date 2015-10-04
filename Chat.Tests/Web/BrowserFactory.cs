@@ -17,8 +17,8 @@
                                  Port = WebAppHosting.Port,
                                  Driver = typeof(Coypu.Drivers.Selenium.SeleniumWebDriver),
                                  Browser = CI ? Browser.PhantomJS : Browser.Chrome,
-                                 Timeout = TimeSpan.FromSeconds(1),
-                                 RetryInterval = TimeSpan.FromSeconds(0.1),
+                                 Timeout = TimeSpan.FromSeconds(2),
+                                 RetryInterval = TimeSpan.FromSeconds(0.2),
                                  WaitBeforeClick = TimeSpan.FromSeconds(0.5)
                              };
 

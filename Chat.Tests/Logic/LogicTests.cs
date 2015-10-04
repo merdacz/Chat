@@ -97,11 +97,11 @@
         [Fact]
         public void Gets_messages_upon_joining_chat()
         {
-            var fixture = ChatHubFixture.Create().With(new InMemoryMessageLog());
+            var fixture = ChatHubFixture.Create();
             var sut = fixture.CreateSut();
             sut.Join(A.RandomShortString());
             sut.SendMessage("Old message. ");
-            for (int i = 1; i <= 15; i++)
+            for (int i = 1; i <= fixture.MessageCountOnJoin; i++)
             {
                 sut.SendMessage($"Message #{i}. ");
             }
@@ -109,7 +109,7 @@
             fixture.NewSession();
             sut.Join(A.RandomShortString());
             var check = fixture.Checks;
-            check.Caller.LastMessagesUponJoin.Should().HaveCount(15);
+            check.Caller.LastMessagesUponJoin.Should().HaveCount(fixture.MessageCountOnJoin);
         }
 
         [Fact]

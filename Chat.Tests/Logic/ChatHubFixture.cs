@@ -25,9 +25,11 @@ namespace Chat.Tests.Logic
 
         public int MaxCapcity => 4;
 
+        public int MessageCountOnJoin => 4;
+
         private ChatHubFixture()
         {
-            this.messageLog = new Mock<IMessageLog>().Object;
+            this.messageLog = new InMemoryMessageLog(this.MessageCountOnJoin);
         }
 
         public static ChatHubFixture Create()
@@ -62,6 +64,7 @@ namespace Chat.Tests.Logic
         {
             var configuration = new Mock<IChatConfiguration>();
             configuration.Setup(x => x.GetMaxCapacity()).Returns(this.MaxCapcity);
+            configuration.Setup(x => x.GetMessageCountOnJoin()).Returns(this.MessageCountOnJoin);
 
             var participants = new ParticipantsStore();
             var chat = new Chat(participants, configuration.Object, this.messageLog);

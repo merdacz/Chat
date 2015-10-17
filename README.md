@@ -2,6 +2,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/d099cxs58qa6pqr8?svg=true)](https://ci.appveyor.com/project/merdacz/chat)
 [![Stories in Ready](https://badge.waffle.io/merdacz/Chat.png?label=ready&title=Ready)](https://waffle.io/merdacz/Chat)
 
+Current master build always available at: http://chitchatter.azurewebsites.net/
+
 ## Summary
 Sample implementation of web chat application. Uses Bootstrap for responsive UI and Knockout JS for View-ViewModel decoupling. On backend side ASP.NET MVC with SignalR is being used to enable real-time communication. For now embedded RavenDB is being used for persistence.
 

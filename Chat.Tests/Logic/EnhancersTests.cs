@@ -1,10 +1,8 @@
 ﻿namespace Chat.Tests.Logic
 {
-    using Chat.Logic;
+    using System.Web;
     using Chat.Logic.Enhancers;
-
     using FluentAssertions;
-
     using Xunit;
 
     public class EnhancersTests
@@ -29,6 +27,45 @@
             var output = pipeline.Process(string.Empty);
 
             output.Should().Be("321");
+        }
+
+        [Theory]
+        [InlineData(":)")]
+        [InlineData("some :) data around")]
+        [InlineData("Multiple emoticons :> and :)")]
+        public void Emoji_enhancer_updates_eligible_input(string input)
+        {
+            var context = new MessageProcessingContext(input);
+            var sut = new EmojiEnhancer();
+            sut.Apply(context);
+
+            context.CurrentMessage.Should().NotBe(input);
+        }
+
+        [Theory]
+        [InlineData(": )")]
+        [InlineData("some plain text to emoji")]
+        [InlineData("")]
+        public void Emoji_enhancer_keeps_non_eligible_input(string input)
+        {
+            var context = new MessageProcessingContext(input);
+            var sut = new EmojiEnhancer();
+            sut.Apply(context);
+
+            context.CurrentMessage.Should().Be(input);
+        }
+
+        [Fact]
+        public void Emoji_enhancer_takes_into_account_encoding()
+        {
+            var input = ":>";
+            var encodedInput = HttpUtility.HtmlEncode(input);
+            var sut = new EmojiEnhancer();
+
+            var context = new MessageProcessingContext(encodedInput);
+            sut.Apply(context);
+
+            context.CurrentMessage.Should().NotBe(encodedInput);
         }
 
         public class PrependingEnhancer : IMessageEnhancer

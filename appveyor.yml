@@ -1,7 +1,24 @@
 version: 1.0.{build}
+os: Visual Studio 2015
 environment:
   UnderTest: True
 before_build:
 - ps: nuget restore
 build:
-  verbosity: minimal
+  publish_wap: true
+  parallel: true
+  verbosity: detailed
+artifacts:
+- path: Chat.Web\obj\Debug\Package\Chat.Web.zip
+  name: mypackage
+deploy:
+- provider: WebDeploy
+  server: https://chitchatter.scm.azurewebsites.net:443/msdeploy.axd?site=chitchatter
+  website: chitchatter
+  username: $chitchatter
+  password:
+    secure: BZJvHaPZRPMDKs+ZoDOtMQ9OrmoCcbRKCg+xZ5kHMUM+6m5oFlk6GZTToGtXGu5qnBJLJoESyIGyoTIdpPFuIg==
+  remove_files: true
+  app_offline: true
+  skip_dirs: '\\App_Data'
+  artifact: mypackage

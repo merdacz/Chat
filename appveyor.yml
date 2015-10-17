@@ -19,6 +19,8 @@ deploy:
   app_offline: true
   skip_dirs: '\\App_Data'
   artifact: Chat.Web
+  on:
+    branch: master
 notifications:
 - provider: Email
   to:

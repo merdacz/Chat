@@ -1,7 +1,5 @@
-namespace Chat.Logic
+namespace Chat.Logic.Log
 {
-    using System;
-
     using Raven.Client;
     using Raven.Client.Embedded;
 

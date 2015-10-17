@@ -46,6 +46,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,19 +58,30 @@
     <Compile Include="Chat.cs" />
     <Compile Include="ChatConfiguration.cs" />
     <Compile Include="ChatSnapshot.cs" />
+    <Compile Include="EmojiSharp\Emoji.cs" />
+    <Compile Include="Enhancers\EmojiEnhancer.cs" />
+    <Compile Include="Enhancers\EncodingEnhancer.cs" />
+    <Compile Include="Enhancers\IMessageEnhancer.cs" />
+    <Compile Include="Enhancers\MessageProcessingContext.cs" />
     <Compile Include="IChat.cs" />
     <Compile Include="IChatConfiguration.cs" />
-    <Compile Include="IMessageLog.cs" />
-    <Compile Include="InMemoryMessageLog.cs" />
+    <Compile Include="Log\IMessageLog.cs" />
+    <Compile Include="Enhancers\IMessageProcessingPipeline.cs" />
+    <Compile Include="Log\InMemoryMessageLog.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Enhancers\MessageProcessingPipeline.cs" />
     <Compile Include="ParticipantsStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenDatabaseAware.cs" />
-    <Compile Include="RavenMessageLog.cs" />
+    <Compile Include="Log\RavenDatabaseAware.cs" />
+    <Compile Include="Log\RavenMessageLog.cs" />
     <Compile Include="Result.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmojiSharp\EmojiLicense.txt" />
+    <Content Include="EmojiSharp\License.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

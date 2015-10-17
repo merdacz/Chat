@@ -12,7 +12,7 @@
     <div id="error" class="alert alert-danger" data-bind="fadeOut: error, visible: error"></div>
     <div id="auth" class="form-inline" data-bind="hidden: joined">
         <input id="usr" type="text" class="form-control input-lg"
-               placeholder="Your display name, at least 5 characters... " 
+               placeholder="Your display name, at least 5 characters... "
                data-bind="value: username, valueUpdate:'keyup', hasFocus: !joined(), enterKey: join"/>
         <input id="join" type="button" value="Join" class="btn btn-primary"
                data-loading-text="Joining..."
@@ -36,7 +36,7 @@
                         data-bind="template: { name: 'messageTemplate', foreach: messages }"></ul>
                     <script type="text/html" id="messageTemplate">
                         <li class="list-group-item">
-                            <span data-bind="text: text"></span>
+                            <span data-bind="html: text"></span>
                             <span class="badge" data-bind="text: username"></span>
                         </li>
                     </script>

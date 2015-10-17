@@ -1,4 +1,4 @@
-﻿namespace Chat.Logic
+﻿namespace Chat.Logic.Log
 {
     using System.Collections.Generic;
 

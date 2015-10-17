@@ -1,12 +1,15 @@
 ﻿namespace Chat.Tests.Logic
 {
     using Chat.Logic;
+    using Chat.Logic.Enhancers;
 
     using FluentAssertions;
 
+    using Moq;
+
     using Xunit;
 
-    public class LogicTests
+    public class ChatHubTests
     {
         [Fact]
         public void Chat_joining()
@@ -125,6 +128,18 @@
 
             var check = fixture.Checks;
             check.Caller.LastInvalidMessage.Should().Contain("full");
+        }
+
+        [Fact]
+        public void Chat_should_process_each_message_through_pipeline_upon_message_arrival()
+        {
+            var fixture = ChatHubFixture.Create();
+            var enhancerSpy = new Mock<IMessageEnhancer>();
+            fixture.With(new MessageProcessingPipeline(enhancerSpy.Object));
+            var sut = fixture.CreateSut();
+            sut.Join(A.RandomShortString());
+            sut.SendMessage(A.RandomShortString());
+            enhancerSpy.Verify(x => x.Apply(It.IsAny<MessageProcessingContext>()));
         }
     }
 }

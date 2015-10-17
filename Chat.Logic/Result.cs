@@ -14,10 +14,19 @@ namespace Chat.Logic
 
         public string Username { get; set; }
 
+        public string ProcessedMessage { get; set; }
+
         public static Result OK(string username)
         {
             var result = new Result(true);
             result.Username = username;
+            return result;
+        }
+
+        public static Result OK(string username, string processedMessage)
+        {
+            var result = OK(username);
+            result.ProcessedMessage = processedMessage;
             return result;
         }
 

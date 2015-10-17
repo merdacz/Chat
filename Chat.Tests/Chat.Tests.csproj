@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="A.cs" />
+    <Compile Include="Logic\EnhancersTests.cs" />
     <Compile Include="Logic\InMemoryMessageLog.cs" />
     <Compile Include="Logic\ClientOperationsSpy.cs" />
     <Compile Include="Logic\IChatHubAssertions.cs" />
@@ -109,7 +110,7 @@
     <Compile Include="Web\BrowserFactory.cs" />
     <Compile Include="Logic\ChatHubFixture.cs" />
     <Compile Include="Web\ChatPageObject.cs" />
-    <Compile Include="Logic\LogicTests.cs" />
+    <Compile Include="Logic\ChatHubTests.cs" />
     <Compile Include="Web\WebBrowserTests.cs" />
     <Compile Include="Web\IChatPageAssertions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,9 +126,9 @@
       <Link>phantomjs.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\packages\WebDriver.ChromeDriver.26.14.313457.1\tools\ChromeDriver.exe">
-      <Link>ChromeDriver.exe</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="..\packages\WebDriver.ChromeDriver.win32.2.19.0.0\content\chromedriver.exe">
+      <Link>chromedriver.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

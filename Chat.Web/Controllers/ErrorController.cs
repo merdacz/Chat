@@ -1,13 +1,17 @@
 ﻿namespace Chat.Web.Controllers
 {
-    using System;
     using System.Web.Mvc;
 
-    public class ChatController : Controller
+    public class ErrorController : Controller
     {
         public ActionResult Index()
         {
             return this.View();
+        }
+
+        public ActionResult NotFound()
+        {
+            return this.View("NotFound");
         }
     }
 }

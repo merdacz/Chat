@@ -6,6 +6,8 @@
     using Chat.Logic;
     using Chat.Web.Controllers;
 
+    using log4net;
+
     using Microsoft.AspNet.SignalR;
 
     using Owin;
@@ -17,6 +19,7 @@
 
         public void Configuration(IAppBuilder app)
         {
+            GlobalHost.HubPipeline.AddModule(new SignalrErrorHandler());
             GlobalHost.DependencyResolver.Register(
                 typeof(ChatHub),
                 () =>

@@ -29,7 +29,11 @@
                         }
                         else
                         {
-                            messageLog = new RavenMessageLog(configuration);
+                            // new RavenMessageLog(configuration) based on embeded
+                            // Raven loads much too long, we will use in memory till
+                            // the issues is resolved (via external Raven or switch to another
+                            // storage provider);
+                            messageLog = new InMemoryMessageLog(configuration);
                         }
 
                         var chat = new Chat(

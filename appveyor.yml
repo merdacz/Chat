@@ -7,10 +7,7 @@ before_build:
 build:
   publish_wap: true
   parallel: true
-  verbosity: detailed
-artifacts:
-- path: Chat.Web\obj\Debug\Package\Chat.Web.zip
-  name: mypackage
+  verbosity: minimal
 deploy:
 - provider: WebDeploy
   server: https://chitchatter.scm.azurewebsites.net:443/msdeploy.axd?site=chitchatter
@@ -21,4 +18,11 @@ deploy:
   remove_files: true
   app_offline: true
   skip_dirs: '\\App_Data'
-  artifact: mypackage
+  artifact: Chat.Web
+notifications:
+- provider: Email
+  to:
+  - merdacz@gmail.com
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true

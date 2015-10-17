@@ -2,6 +2,9 @@
 {
     using System.Linq;
 
+    using global::Chat.Logic.Enhancers;
+    using global::Chat.Logic.Log;
+
     public class Chat : IChat
     {
         private readonly IChatConfiguration configuration;
@@ -10,11 +13,14 @@
 
         public readonly ParticipantsStore participants;
 
-        public Chat(ParticipantsStore participants, IChatConfiguration configuration, IMessageLog messageLog)
+        private readonly IMessageProcessingPipeline messageProcessingPipeline;
+
+        public Chat(ParticipantsStore participants, IChatConfiguration configuration, IMessageLog messageLog, IMessageProcessingPipeline messageProcessingPipeline)
         {
             this.participants = participants;
             this.configuration = configuration;
             this.messageLog = messageLog;
+            this.messageProcessingPipeline = messageProcessingPipeline;
         }
 
         public ChatSnapshot TakeSnapshot()
@@ -71,8 +77,9 @@
             }
 
             string username = this.participants[connectionId];
-            this.messageLog.Save(username, message);
-            return Result.OK(username);
+            var processedMessage = this.messageProcessingPipeline.Process(message);
+            this.messageLog.Save(username, processedMessage);
+            return Result.OK(username, processedMessage);
         }
     }
 }

@@ -3,6 +3,8 @@ namespace Chat.Tests.Logic
     using System;
 
     using Chat.Logic;
+    using Chat.Logic.Enhancers;
+    using Chat.Logic.Log;
     using Chat.Web.Controllers;
 
     using Microsoft.AspNet.SignalR.Hubs;
@@ -14,6 +16,8 @@ namespace Chat.Tests.Logic
         private ChatHub createdInstance = null;
 
         private IMessageLog messageLog = null;
+
+        private IMessageProcessingPipeline messageProcessingPipeline = null;
 
         public IChatHubAssertions Checks => this;
 
@@ -30,6 +34,7 @@ namespace Chat.Tests.Logic
         private ChatHubFixture()
         {
             this.messageLog = new InMemoryMessageLog(this.MessageCountOnJoin);
+            this.messageProcessingPipeline = new MessageProcessingPipeline();
         }
 
         public static ChatHubFixture Create()
@@ -40,6 +45,11 @@ namespace Chat.Tests.Logic
         public ChatHubFixture With(IMessageLog messageLog)
         {
             this.messageLog = messageLog;
+            return this;
+        }
+        public ChatHubFixture With(IMessageProcessingPipeline pipeline)
+        {
+            this.messageProcessingPipeline = pipeline;
             return this;
         }
 
@@ -67,7 +77,7 @@ namespace Chat.Tests.Logic
             configuration.Setup(x => x.GetMessageCountOnJoin()).Returns(this.MessageCountOnJoin);
 
             var participants = new ParticipantsStore();
-            var chat = new Chat(participants, configuration.Object, this.messageLog);
+            var chat = new Chat(participants, configuration.Object, this.messageLog, this.messageProcessingPipeline);
             return chat;
         }
 

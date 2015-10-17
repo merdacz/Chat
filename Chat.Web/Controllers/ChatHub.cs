@@ -1,5 +1,7 @@
 ﻿namespace Chat.Web.Controllers
 {
+    using System.Web;
+
     using Chat.Logic;
 
     using Microsoft.AspNet.SignalR;
@@ -20,13 +22,14 @@
 
         public void Join(string username)
         {
+            var encodedUserName = HttpUtility.HtmlEncode(username);
             var result = this.chat.Join(username, this.ConnectionId);
             if (result.Success)
             {
                 var snapshot = this.chat.TakeSnapshot();
                 this.Clients.Caller.joinedSuccessfully(snapshot.Participants, snapshot.RecentMessages);
-                this.Clients.Caller.newMessage(SystemUserName, $"Welcome {username} to our SignalR chat. ");
-                this.Clients.Others.newMessage(SystemUserName, $"{username} joined the chat. ");
+                this.Clients.Caller.newMessage(SystemUserName, $"Welcome {encodedUserName} to our SignalR chat. ");
+                this.Clients.Others.newMessage(SystemUserName, $"{encodedUserName} joined the chat. ");
                 this.Clients.Others.newUserJoined(username);
                 return;
             }
@@ -53,7 +56,7 @@
             var result = this.chat.SendMessage(this.ConnectionId, message);
             if (result.Success)
             {
-                this.Clients.All.newMessage(result.Username, message);
+                this.Clients.All.newMessage(result.Username, result.ProcessedMessage);
                 return;
             }
 

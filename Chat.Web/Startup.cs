@@ -4,6 +4,8 @@
     using System.Web.Mvc;
 
     using Chat.Logic;
+    using Chat.Logic.Enhancers;
+    using Chat.Logic.Log;
     using Chat.Web.Controllers;
 
     using log4net;
@@ -39,10 +41,15 @@
                             messageLog = new InMemoryMessageLog(configuration);
                         }
 
+                        var messageProcessor = new MessageProcessingPipeline(
+                            new EncodingEnhancer(),
+                            new EmojiEnhancer());
+
                         var chat = new Chat(
                             participantsStore,
                             configuration,
-                            messageLog);
+                            messageLog,
+                            messageProcessor);
                         return new ChatHub(chat);
                     });
             app.MapSignalR();

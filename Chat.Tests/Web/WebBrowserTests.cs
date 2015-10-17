@@ -104,12 +104,14 @@
 
                 alice.Join();
                 bob.Join();
-                alice.SendMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
+                alice.SendMessage("Beware Bob! I want to <script>alert('hack you!' );</script>");
 
-                // checking against dialog would be problematic in phantomjs.
+                // 1. checking against dialog would be problematic in phantomjs.
                 // since it does not support alert directly webdriver's hasdialog won't work.
                 // instead we just explicitly validate encoded version appears on screen.
-                bob.Should().GetMessage("Beware Bob! I want to <script>alert('hack you!');</script>");
+                // 2. also note single space after closing apostrophe - it is intentional
+                // and avoids emoji to interfere with asserts. 
+                bob.Should().GetMessage("Beware Bob! I want to <script>alert('hack you!' );</script>");
 
                 alice.Leave();
                 bob.Leave();

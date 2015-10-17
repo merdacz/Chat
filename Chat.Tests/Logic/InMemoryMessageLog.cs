@@ -3,6 +3,7 @@
     using System.Collections.Generic;
 
     using Chat.Logic;
+    using Chat.Logic.Log;
 
     public class InMemoryMessageLog : IMessageLog
     {
